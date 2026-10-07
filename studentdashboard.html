@@ -75,9 +75,9 @@
         if (r.status === "Confirmed") {
           // Dean already confirmed: show the CS hours
           row.insertCell().textContent = "Confirmed";
-          row.insertCell().textContent = r.hours || 0;
+          row.insertCell().textContent = r.csHours || 0;
           count = count + 1;
-          hours = hours + Number(r.hours || 0);
+          hours = hours + Number(r.csHours || 0);
         } else {
           // Not yet confirmed by the Dean: hide the hours
           row.insertCell().textContent = "Waiting for Dean";
@@ -105,8 +105,8 @@
   // Only for testing. Delete when the faculty and dean pages save real data.
   function addSampleData() {
     var sample = [
-      { date: "10/5/2026", studentId: "2095294", studentName: "John Victor Laput", studentEmail: "john@example.com", offenseType: "Minor", offenseCategory: "First warning", specificViolation: "Always late", status: "Confirmed", hours: 4, remarks: "" },
-      { date: "10/6/2026", studentId: "2095294", studentName: "John Victor Laput", studentEmail: "john@example.com", offenseType: "Major", offenseCategory: "Second warning", specificViolation: "Cursing in class", status: "Pending", hours: 0, remarks: "Witness by a Instructor" }
+      { date: "10/5/2026", studentId: "2095294", studentName: "John Victor Laput", studentEmail: "john@example.com", offenseType: "Minor", offenseCategory: "First warning", specificViolation: "Always late", status: "Confirmed", csHours: 4, remarks: "" },
+      { date: "10/6/2026", studentId: "2095294", studentName: "John Victor Laput", studentEmail: "john@example.com", offenseType: "Major", offenseCategory: "Second warning", specificViolation: "Cursing in class", status: "Pending", csHours: 0, remarks: "Witness by a Instructor" }
     ];
     localStorage.setItem(KEY, JSON.stringify(sample));
     localStorage.setItem("registeredName", "John Victor Laput");
