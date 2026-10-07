@@ -41,6 +41,7 @@
 
   // 1. Get the logged-in student's name (saved by the register page)
   var name = localStorage.getItem("registeredName") || "";
+  var email = localStorage.getItem("registeredEmail") || "";
   document.getElementById("studentName").textContent = name;
 
   // 2. Show this student's offenses
@@ -59,14 +60,17 @@
     for (var i = 0; i < all.length; i++) {
       var r = all[i];
 
-      // match the report to the logged-in student by name
-      if (String(r.name).toLowerCase() === name.toLowerCase()) {
+      // match the report to the logged-in student (by email or name)
+      var sameEmail = email !== "" && String(r.studentEmail).toLowerCase() === email.toLowerCase();
+      var sameName = name !== "" && String(r.studentName).toLowerCase() === name.toLowerCase();
+
+      if (sameEmail || sameName) {
         found = found + 1;
         var row = table.insertRow();
         row.insertCell().textContent = r.date;
-        row.insertCell().textContent = r.type;
-        row.insertCell().textContent = r.category;
-        row.insertCell().textContent = r.violation;
+        row.insertCell().textContent = r.offenseType;
+        row.insertCell().textContent = r.offenseCategory;
+        row.insertCell().textContent = r.specificViolation;
 
         if (r.status === "Confirmed") {
           // Dean already confirmed: show the CS hours
@@ -101,11 +105,12 @@
   // Only for testing. Delete when the faculty and dean pages save real data.
   function addSampleData() {
     var sample = [
-      { date: "10/5/2026", studentId: "2095294", name: "John Victor Lapu", type: "Minor", category: "First warning", violation: "Always late", status: "Confirmed", hours: 4, remarks: "" },
-      { date: "10/6/2026", studentId: "2095294", name: "John Victor Laput", type: "Major", category: "Second warning", violation: "Cursing in class", status: "Pending", hours: 0, remarks: "Witness by a Instructor" }
+      { date: "10/5/2026", studentId: "2095294", studentName: "John Victor Laput", studentEmail: "john@example.com", offenseType: "Minor", offenseCategory: "First warning", specificViolation: "Always late", status: "Confirmed", hours: 4, remarks: "" },
+      { date: "10/6/2026", studentId: "2095294", studentName: "John Victor Laput", studentEmail: "john@example.com", offenseType: "Major", offenseCategory: "Second warning", specificViolation: "Cursing in class", status: "Pending", hours: 0, remarks: "Witness by a Instructor" }
     ];
     localStorage.setItem(KEY, JSON.stringify(sample));
     localStorage.setItem("registeredName", "John Victor Laput");
+    localStorage.setItem("registeredEmail", "john@example.com");
     location.reload();
   }
 
