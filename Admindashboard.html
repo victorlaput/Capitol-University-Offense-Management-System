@@ -173,13 +173,29 @@
 <script>
   // ===== 1. SAVE AND GET DATA (localStorage) =====
   // Reports are saved under the key "offenseReports" (same key as the Faculty dashboard)
+  //
+  // FIELD NAMES (same as the Faculty page):
+  //   date, studentId, studentName, studentEmail, offenseType,
+  //   offenseCategory, specificViolation, remarks
+  // Added by the Dean page: status ("Pending" or "Confirmed"), csHours
 
   function getReports() {
     var data = localStorage.getItem("offenseReports");
     if (data == null) {
       return [];
     }
-    return JSON.parse(data);
+    var reports = JSON.parse(data);
+
+    // Reports from the Faculty page have no status yet, so they are "Pending"
+    for (var i = 0; i < reports.length; i++) {
+      if (!reports[i].status) {
+        reports[i].status = "Pending";
+      }
+      if (!reports[i].csHours) {
+        reports[i].csHours = 0;
+      }
+    }
+    return reports;
   }
 
   function saveReports(reports) {
@@ -256,15 +272,15 @@
       }
 
       var typeClass = "";
-      if (r.type == "Major") {
+      if (r.offenseType == "Major") {
         typeClass = "major";
       }
 
       rows = rows + "<tr>" +
         "<td>" + r.date + "</td>" +
         "<td>" + r.studentId + "</td>" +
-        "<td>" + r.name + "</td>" +
-        "<td class='" + typeClass + "'>" + r.type + "</td>" +
+        "<td>" + r.studentName + "</td>" +
+        "<td class='" + typeClass + "'>" + r.offenseType + "</td>" +
         "<td><span class='badge " + r.status.toLowerCase() + "'>" + r.status + "</span></td>" +
         "<td>" + hours + "</td>" +
         "<td>" + buttons + "</td>" +
@@ -291,11 +307,11 @@
     selectedIndex = index;
     var r = getReports()[index];
 
-    document.getElementById("confirmInfo").innerHTML = r.name + " (" + r.studentId + ") - " + r.violation;
+    document.getElementById("confirmInfo").innerHTML = r.studentName + " (" + r.studentId + ") - " + r.specificViolation;
     document.getElementById("adminRemarks").value = "";
 
     // suggested hours: 20 for Major, 5 for Minor (the Dean can change it)
-    if (r.type == "Major") {
+    if (r.offenseType == "Major") {
       document.getElementById("csHours").value = 20;
     } else {
       document.getElementById("csHours").value = 5;
@@ -326,11 +342,11 @@
   function viewInfo(index) {
     var r = getReports()[index];
 
-    var text = "<p><b>Student:</b> " + r.name + " (" + r.studentId + ")</p>" +
+    var text = "<p><b>Student:</b> " + r.studentName + " (" + r.studentId + ")</p>" +
       "<p><b>Date reported:</b> " + r.date + "</p>" +
-      "<p><b>Offense type:</b> " + r.type + " - " + r.category + "</p>" +
-      "<p><b>Violation:</b> " + r.violation + "</p>" +
-      "<p><b>Faculty remarks:</b> " + r.remarks + "</p>" +
+      "<p><b>Offense type:</b> " + r.offenseType + " - " + r.offenseCategory + "</p>" +
+      "<p><b>Violation:</b> " + r.specificViolation + "</p>" +
+      "<p><b>Faculty remarks:</b> " + (r.remarks || "") + "</p>" +
       "<p><b>Status:</b> " + r.status + "</p>";
 
     if (r.status == "Confirmed") {
@@ -343,8 +359,8 @@
 
   function loadSampleData() {
     var sample = [
-      { id: 1, date: "2026-10-01", studentId: "2095383", name: "Ederly labarro", type: "Minor", category: "First Warning", violation: "Wearing Jorts", remarks: "Seen by dean", status: "Pending", csHours: 0 },
-      { id: 2, date: "2026-10-03", studentId: "2095475", name: "Joseph Jr.Omictin", type: "Major", category: "Second Warning", violation: "Gisumbag si bailo sa nahong", remarks: "Na hospital", status: "Pending", csHours: 0 }
+      { date: "2026-10-01", studentId: "2095383", studentName: "Ederly labarro", studentEmail: "ederly@example.com", offenseType: "Minor", offenseCategory: "First warning", specificViolation: "Wearing Jorts", remarks: "Seen by dean", status: "Pending", csHours: 0 },
+      { date: "2026-10-03", studentId: "2095475", studentName: "Joseph Jr.Omictin", studentEmail: "joseph@example.com", offenseType: "Major", offenseCategory: "Second warning", specificViolation: "Gisumbag si bailo sa nahong", remarks: "Na hospital", status: "Pending", csHours: 0 }
     ];
     saveReports(sample);
     showReports();
@@ -371,21 +387,23 @@
 
     for (var i = 0; i < reports.length; i++) {
       var r = reports[i];
-      var id = r.studentId.toLowerCase();
-      var name = r.name.toLowerCase();
+      var id = String(r.studentId).toLowerCase();
+      var name = String(r.studentName).toLowerCase();
 
       // match if the text is found in the ID or in the name
       if (id.indexOf(text) != -1 || name.indexOf(text) != -1) {
         count = count + 1;
-        studentName = r.name;
+        studentName = r.studentName;
         studentId = r.studentId;
 
+        var hours = "-";
         if (r.status == "Confirmed") {
           totalHours = totalHours + Number(r.csHours);
+          hours = r.csHours;
         }
 
-        rows = rows + "<tr><td>" + r.date + "</td><td>" + r.type + "</td><td>" + r.violation +
-          "</td><td>" + r.status + "</td><td>" + r.csHours + "</td></tr>";
+        rows = rows + "<tr><td>" + r.date + "</td><td>" + r.offenseType + "</td><td>" + r.specificViolation +
+          "</td><td>" + r.status + "</td><td>" + hours + "</td></tr>";
       }
     }
 
