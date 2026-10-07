@@ -1,53 +1,225 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Dashboard</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f2f2f2;
+      color: #222;
+    }
+
+    
+    .topbar {
+      background: #7a0000;
+      color: #fff;
+      padding: 28px 24px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .box {
+      max-width: 968px;
+      margin: 20px auto;
+      padding: 0 16px 40px;
+    }
+
+    h1 { font-size: 22px; margin: 0 0 16px; }
+    h2 { font-size: 17px; margin: 0 0 14px; }
+
+    .card {
+      background: #fff;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 14px; }
+
+    input[type="text"] {
+      width: 100%;
+      max-width: 320px;
+      padding: 9px 10px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    input[type="text"]:focus { outline: 2px solid #7a0000; border-color: #7a0000; }
+
+    button {
+      padding: 9px 16px;
+      border: none;
+      border-radius: 4px;
+      background: #7a0000;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #5c0000; }
+    button.gray { background: #666; }
+    button.gray:hover { background: #4d4d4d; }
+
+    /* stat cards with maroon left border */
+    .stats { display: flex; gap: 20px; margin-bottom: 20px; }
+    .stat {
+      flex: 1;
+      background: #fff;
+      border-left: 4px solid #7a0000;
+      border-radius: 6px;
+      padding: 20px;
+      font-size: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .stat .number { font-size: 26px; font-weight: bold; margin-bottom: 4px; }
+
+    
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 12px 10px; }
+    th { background: #f5f5f5; font-weight: bold; }
+    td { border-bottom: 1px solid #eee; }
+
+    #emptyMessage { color: #666; margin: 14px 0 0; }
+
+    
+    .slideshow { position: relative; border-radius: 6px; overflow: hidden; background: #7a0000; color: #fff; }
+    .slide { display: none; min-height: 190px; padding: 32px 70px; text-align: center; }
+    .slide.active { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .slide h3 { margin: 0 0 10px; font-size: 20px; }
+    .slide p { margin: 0; max-width: 560px; line-height: 1.5; }
+    .slide.has-img { background-size: cover; background-position: center; }
+    .slide.has-img h3, .slide.has-img p { background: rgba(0, 0, 0, 0.55); padding: 6px 12px; border-radius: 4px; }
+    .arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 36px; height: 36px; padding: 0; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2); font-size: 18px;
+    }
+    .arrow:hover { background: rgba(255, 255, 255, 0.35); }
+    .arrow.prev { left: 14px; }
+    .arrow.next { right: 14px; }
+    .dots { text-align: center; margin-top: 12px; }
+    .dot { display: inline-block; width: 9px; height: 9px; margin: 0 4px; border-radius: 50%; background: #ccc; cursor: pointer; }
+    .dot.active { background: #7a0000; }
+
+    
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .tile { cursor: pointer; border-radius: 6px; overflow: hidden; border: 1px solid #eee; background: #fff; }
+    .tile .pic {
+      height: 130px; display: flex; align-items: center; justify-content: center;
+      background: #f5f5f5 center / cover no-repeat; color: #7a0000; font-size: 34px; font-weight: bold;
+    }
+    .tile .cap { padding: 10px; font-size: 13px; }
+    .tile:hover { border-color: #7a0000; }
+
+    #lightbox {
+      display: none; position: fixed; inset: 0; z-index: 10;
+      background: rgba(0, 0, 0, 0.8); align-items: center; justify-content: center; padding: 20px;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox .view { background: #fff; border-radius: 6px; max-width: 640px; width: 100%; overflow: hidden; }
+    #lightbox .big { height: 360px; display: flex; align-items: center; justify-content: center; background: #f5f5f5 center / contain no-repeat; color: #7a0000; font-size: 60px; font-weight: bold; }
+    #lightbox .cap { padding: 14px; }
+
+    @media (max-width: 600px) {
+      .slide { padding: 28px 54px; }
+      .stats { flex-direction: column; gap: 12px; }
+    }
+  </style>
 </head>
 <body>
+
+<div class="topbar">Capitol University Offense Management System</div>
+
 <div class="box">
 
-  <!-- Welcome message (name comes from the register page) -->
-  <h1>Welcome, <span id="studentName"></span>!</h1>
+  <div class="card">
+    <h1>Student Dashboard</h1>
+    <label for="studentId">Your Student ID</label>
+    <input type="text" id="studentId" placeholder="e.g. 2095294">
+    <button onclick="showOffenses()">Show my offenses</button>
+  </div>
 
   <div class="stats">
-    <div class="stat"><div class="number" id="totalOffenses">0</div>Confirmed Offenses</div>
+    <div class="stat"><div class="number" id="totalOffenses">0</div>Total Offenses</div>
     <div class="stat"><div class="number" id="totalHours">0</div>Community Service Hours</div>
   </div>
 
-  <h2>My Offenses</h2>
-  <table id="offenseTable">
-    <tr>
-      <th>Date</th>
-      <th>Type</th>
-      <th>Category</th>
-      <th>Violation</th>
-      <th>Status</th>
-      <th>CS Hours</th>
-      <th>Remarks</th>
-    </tr>
-  </table>
+  <div class="card">
+    <h2>My Offenses</h2>
+    <div class="table-wrap">
+      <table id="offenseTable">
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Category</th>
+          <th>Violation</th>
+          <th>CS Hours</th>
+          <th>Remarks</th>
+        </tr>
+      </table>
+    </div>
 
-  <p id="emptyMessage"></p>
-  <br>
+    <p id="emptyMessage"></p>
 
-  <button onclick="logout()">Log out</button>
+    <br>
+    <button class="gray" onclick="clearbtn()">Clear</button>
+  </div>
+
+  <div class="card">
+    <h2>Campus Reminders</h2>
+    <div class="slideshow" id="slideshow">
+      <button class="arrow prev" onclick="moveSlide(-1)" aria-label="Previous">&#8249;</button>
+      <button class="arrow next" onclick="moveSlide(1)" aria-label="Next">&#8250;</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="card">
+    <h2>Community Service Gallery</h2>
+    <div class="gallery" id="gallery"></div>
+  </div>
+</div>
+
+<div id="lightbox" onclick="closeLightbox()">
+  <div class="view">
+    <div class="big" id="lightboxPic"></div>
+    <div class="cap" id="lightboxCap"></div>
+  </div>
 </div>
 
 <script>
-  // Must be the SAME key the faculty and dean pages use.
   var KEY = "offenseReports";
 
-  // 1. Get the logged-in student's name (saved by the register page)
-  var name = localStorage.getItem("registeredName") || "";
-  var email = localStorage.getItem("registeredEmail") || "";
-  document.getElementById("studentName").textContent = name;
+  function clearbtn() {
+    document.getElementById("studentId").value = "";
 
-  // 2. Show this student's offenses
+    var table = document.getElementById("offenseTable");
+    while (table.rows.length > 1) {
+      table.deleteRow(1);
+    }
+
+    document.getElementById("totalOffenses").textContent = 0;
+    document.getElementById("totalHours").textContent = 0;
+    document.getElementById("emptyMessage").textContent = "";
+  }
+
   function showOffenses() {
+    var id = document.getElementById("studentId").value;
+    localStorage.setItem("studentId", id);
+
+    // get all reports saved by faculty
     var all = JSON.parse(localStorage.getItem(KEY) || "[]");
 
+    // clear old rows (keep the header row)
     var table = document.getElementById("offenseTable");
     while (table.rows.length > 1) {
       table.deleteRow(1);
@@ -55,65 +227,150 @@
 
     var count = 0;
     var hours = 0;
-    var found = 0;
 
     for (var i = 0; i < all.length; i++) {
       var r = all[i];
-
-      // match the report to the logged-in student (by email or name)
-      var sameEmail = email !== "" && String(r.studentEmail).toLowerCase() === email.toLowerCase();
-      var sameName = name !== "" && String(r.studentName).toLowerCase() === name.toLowerCase();
-
-      if (sameEmail || sameName) {
-        found = found + 1;
+      if (String(r.studentId) === id) {
         var row = table.insertRow();
         row.insertCell().textContent = r.date;
-        row.insertCell().textContent = r.offenseType;
-        row.insertCell().textContent = r.offenseCategory;
-        row.insertCell().textContent = r.specificViolation;
-
-        if (r.status === "Confirmed") {
-          // Dean already confirmed: show the CS hours
-          row.insertCell().textContent = "Confirmed";
-          row.insertCell().textContent = r.csHours || 0;
-          count = count + 1;
-          hours = hours + Number(r.csHours || 0);
-        } else {
-          // Not yet confirmed by the Dean: hide the hours
-          row.insertCell().textContent = "Waiting for Dean";
-          row.insertCell().textContent = "-";
-        }
-
+        row.insertCell().textContent = r.type;
+        row.insertCell().textContent = r.category;
+        row.insertCell().textContent = r.violation;
+        row.insertCell().textContent = r.hours || 0;
         row.insertCell().textContent = r.remarks || "";
+        count = count + 1;
+        hours = hours + Number(r.hours || 0);
       }
     }
 
     document.getElementById("totalOffenses").textContent = count;
     document.getElementById("totalHours").textContent = hours;
 
-    if (found === 0) {
-      document.getElementById("emptyMessage").textContent = "No offenses found.";
+    if (count === 0) {
+      document.getElementById("emptyMessage").textContent = "No offenses found for this ID.";
     } else {
       document.getElementById("emptyMessage").textContent = "";
     }
   }
 
-  function logout() {
-    window.location.href = "index.html";
-  }
-
-  // Only for testing. Delete when the faculty and dean pages save real data.
+  
   function addSampleData() {
     var sample = [
-      { date: "10/5/2026", studentId: "2095294", studentName: "John Victor Laput", studentEmail: "john@example.com", offenseType: "Minor", offenseCategory: "First warning", specificViolation: "Always late", status: "Confirmed", csHours: 4, remarks: "" },
-      { date: "10/6/2026", studentId: "2095294", studentName: "John Victor Laput", studentEmail: "john@example.com", offenseType: "Major", offenseCategory: "Second warning", specificViolation: "Cursing in class", status: "Pending", csHours: 0, remarks: "Witness by a Instructor" }
+      { date: "10/5/2026", studentId: " ", name: "John Victor Laput", type: "Minor", category: "First warning", violation: "Always late", hours: 4, remarks: "" },
+      { date: "10/6/2026", studentId: "2095294", name: "John Victor Laput", type: "Major", category: "Second warning", violation: "Cursing in class", hours: 8, remarks: "Witness by a Instructor" }
     ];
     localStorage.setItem(KEY, JSON.stringify(sample));
-    localStorage.setItem("registeredName", "John Victor Laput");
-    localStorage.setItem("registeredEmail", "john@example.com");
-    location.reload();
+    document.getElementById("studentId").value = "2095294";
+    showOffenses();
   }
 
+
+  var slides = [
+    { title: "Respect the Code of Conduct", text: "Read the Code of Conduct so you know what is expected inside and outside the campus.", img: "" },
+    { title: "Be on Time", text: "Repeated tardiness is recorded as a minor offense. Plan your trips and arrive before class starts.", img: "" },
+    { title: "Community Service Hours", text: "Assigned CS hours must be completed and signed off before the deadline set by your dean.", img: "" },
+    { title: "Need Help?", text: "Questions about a record? Check your Inbox or visit the Dean's office.", img: "" }
+  ];
+
+  var gallery = [
+    { caption: "Campus clean-up drive", img: "" },
+    { caption: "Tree planting", img: "" },
+    { caption: "Library volunteer work", img: "" },
+    { caption: "Feeding program", img: "" },
+    { caption: "Classroom repainting", img: "" },
+    { caption: "Recycling drive", img: "" }
+  ];
+
+  var current = 0;
+  var timer;
+
+  function buildSlideshow() {
+    var box = document.getElementById("slideshow");
+    var dots = document.getElementById("dots");
+    for (var i = 0; i < slides.length; i++) {
+      var s = document.createElement("div");
+      s.className = "slide";
+      var h = document.createElement("h3");
+      h.textContent = slides[i].title;
+      var p = document.createElement("p");
+      p.textContent = slides[i].text;
+      s.appendChild(h);
+      s.appendChild(p);
+      if (slides[i].img) {
+        s.classList.add("has-img");
+        s.style.backgroundImage = "url('" + slides[i].img + "')";
+      }
+      box.appendChild(s);
+
+      var d = document.createElement("span");
+      d.className = "dot";
+      d.setAttribute("data-i", i);
+      d.onclick = function () { goToSlide(Number(this.getAttribute("data-i"))); };
+      dots.appendChild(d);
+    }
+    goToSlide(0);
+  }
+
+  function goToSlide(n) {
+    var all = document.querySelectorAll(".slide");
+    var dots = document.querySelectorAll(".dot");
+    current = (n + all.length) % all.length;
+    for (var i = 0; i < all.length; i++) {
+      all[i].classList.toggle("active", i === current);
+      dots[i].classList.toggle("active", i === current);
+    }
+    // restart the auto-play timer
+    clearInterval(timer);
+    timer = setInterval(function () { goToSlide(current + 1); }, 5000);
+  }
+
+  function moveSlide(step) {
+    goToSlide(current + step);
+  }
+
+  function buildGallery() {
+    var box = document.getElementById("gallery");
+    for (var i = 0; i < gallery.length; i++) {
+      var tile = document.createElement("div");
+      tile.className = "tile";
+      tile.setAttribute("data-i", i);
+      tile.onclick = function () { openLightbox(Number(this.getAttribute("data-i"))); };
+
+      var pic = document.createElement("div");
+      pic.className = "pic";
+      if (gallery[i].img) {
+        pic.style.backgroundImage = "url('" + gallery[i].img + "')";
+      } else {
+        pic.textContent = i + 1;
+      }
+
+      var cap = document.createElement("div");
+      cap.className = "cap";
+      cap.textContent = gallery[i].caption;
+
+      tile.appendChild(pic);
+      tile.appendChild(cap);
+      box.appendChild(tile);
+    }
+  }
+
+  function openLightbox(i) {
+    var big = document.getElementById("lightboxPic");
+    big.style.backgroundImage = gallery[i].img ? "url('" + gallery[i].img + "')" : "none";
+    big.textContent = gallery[i].img ? "" : i + 1;
+    document.getElementById("lightboxCap").textContent = gallery[i].caption;
+    document.getElementById("lightbox").classList.add("open");
+  }
+
+  function closeLightbox() {
+    document.getElementById("lightbox").classList.remove("open");
+  }
+
+  buildSlideshow();
+  buildGallery();
+
+  
+  document.getElementById("studentId").value = localStorage.getItem("studentId") || "";
   showOffenses();
 </script>
 </body>
