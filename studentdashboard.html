@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+</head>
+<body>
+<div class="box">
+
+    <h1>Student Dashboard</h1>
+
+    <label>Your Student ID</label>
+    <input type="text" id="studentId" placeholder="e.g. 2095294">
+    <button onclick="showOffenses()">Show my offenses</button>
+
+    <div class="stats">
+      <div class="stat"><div class="number" id="totalOffenses">0</div>Total Offenses</div>
+      <div class="stat"><div class="number" id="totalHours">0</div>Community Service Hours</div>
+    </div>
+
+
+    <h2>My Offenses</h2>
+    <table id="offenseTable">
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Violation</th>
+        <th>CS Hours</th>
+        <th>Remarks</th>
+      </tr>
+    </table>
+
+
+    <p id="emptyMessage"></p>
+    <br>
+
+    <button onclick="clearbtn()">Clear</button>
+</div>
+
+  <script>
+    // This must be the SAME name the faculty page uses when saving.
+    var KEY = "offenseReports";
+
+    function showOffenses() {
+      var id = document.getElementById("studentId").value 
+      localStorage.setItem("studentId", id);
+
+      function clearbtn() {
+        document.getElementById('studentId').value = "";
+
+        var table = document.getElementById("offenseTablerecords");
+        while (table.rows.length > 1) {
+          table.deleteRow(1);
+        }
+
+        document.getElementById("totalOffenses").textContent = 0;
+        document.getElementById("totalHours").textContent = 0;
+      }
+
+      // get all reports saved by faculty
+      var all = JSON.parse(localStorage.getItem(KEY) || "[]");
+
+      // clear old rows (keep the header row)
+      var table = document.getElementById("offenseTable");
+      while (table.rows.length > 1) {
+        table.deleteRow(1);
+      }
+
+      var count = 0;
+      var hours = 0;
+
+      for (var i = 0; i < all.length; i++) {
+        var r = all[i];
+        if (String(r.studentId) === id) {
+          var row = table.insertRow();
+          row.insertCell().textContent = r.date;
+          row.insertCell().textContent = r.type;
+          row.insertCell().textContent = r.category;
+          row.insertCell().textContent = r.violation;
+          row.insertCell().textContent = r.hours || 0;
+          row.insertCell().textContent = r.remarks || "";
+          count = count + 1;
+          hours = hours + Number(r.hours || 0);
+        }
+      }
+
+      document.getElementById("totalOffenses").textContent = count;
+      document.getElementById("totalHours").textContent = hours;
+
+      if (count === 0) {
+        document.getElementById("emptyMessage").textContent = "No offenses found for this ID.";
+      } else {
+        document.getElementById("emptyMessage").textContent = "";
+      }
+    }
+
+    // Only for testing. Delete this when the faculty page is saving real data.
+    function addSampleData() {
+      var sample = [
+        { date: "10/5/2026", studentId: "2095294", name: "John Victor Laput", type: "Minor", category: "First warning", violation: "Always late", hours: 4, remarks: "" },
+        { date: "10/6/2026", studentId: "2095294", name: "John Victor Laput", type: "Major", category: "Second warning", violation: "Cursing in class", hours: 8, remarks: "Witness by a Instructor" }
+      ];
+      localStorage.setItem(KEY, JSON.stringify(sample));
+      document.getElementById("studentId").value = "2095294";
+      showOffenses();
+    }
+
+    // When the page opens, show the last Student ID used
+    document.getElementById("studentId").value = localStorage.getItem("studentId") || "";
+    showOffenses();
+</script>
+</body>
+</html>
+<body>
+
+</body>
+</html>

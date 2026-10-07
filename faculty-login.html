@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Faculty Login</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body{
+     margin: 0;
+    min-height: 100vh;
+    background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.50), rgba(255, 255, 255, 0.50)),url("CU.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+    .container {
+        width: 90%;
+        max-width: 500px;
+        margin: auto;
+        text-align: center;
+        padding-top: 50px;
+    }
+
+    .login-box {
+        background: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h3 {
+        margin-bottom: 30px;
+        color: #8B0000;
+        font-size: 35px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    #username {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background: #8B0000;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #7a0000;
+    }
+
+    .back {
+        margin-top: 20px;
+    }
+
+    .back a {
+        color: #8B0000;
+        text-decoration: none;
+    }
+
+    footer {
+    text-align: center;
+    color: maroon;
+    margin-top: 270px;
+}
+</style>
+
+<body>
+   <center>
+
+<div class="container">
+
+    <div class="login-box">
+
+        <h3>Faculty LOGIN</h3>
+
+        <form id ="facultyLogin">
+
+           <input type="email" id="username" placeholder="2054123@g.cu.edu.ph" required>
+
+            <input type="password" id="password" placeholder="Password" required>
+
+
+            <button type="submit">LOGIN</button>
+
+        </form>
+
+        <p class="back">
+            <a href="index.html">← Back to Home</a>
+        </p>
+
+    </div>
+
+</div>
+
+<footer>
+    Capitol University © 2026
+</footer>
+<script>
+document.getElementById("facultyLogin").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("username").value.trim().toLowerCase();
+    const password = document.getElementById("password").value;
+
+    const registeredEmail = (localStorage.getItem("registeredEmail") || "").trim().toLowerCase();
+    const registeredPassword = localStorage.getItem("registeredPassword");
+    const registeredRole = localStorage.getItem("registeredRole");
+
+    if (
+        email === registeredEmail &&
+        password === registeredPassword &&
+        registeredRole === "Faculty"
+    ) {
+        alert("Login Successful!");
+        window.location.href = "Facultydashboard.html";
+    } else {
+        alert("Invalid email or password.");
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register - Offense Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          background-image: linear-gradient(rgba(255, 255, 255, 0.50), rgba(255, 255, 255, 0.50)),url("CU.png");
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-attachment: fixed  ;
+            padding: 20px;
+        }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        /* University Title */
+        .container h1 {
+            color: black;
+            font-size: 32px;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .container h2 {
+            color: maroon   ;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Register Box */
+        .register-box {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+            text-align: left;
+        }
+
+        /* Create Account */
+        .register-box h3 {
+            text-align: center;
+            color: #7b1113;
+            font-size: 25px;
+            margin-bottom: 25px;
+        }
+
+        /* Labels */
+        .register-box label {
+            display: block;
+            margin-bottom: 7px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Inputs and Select */
+        .register-box input,
+        .register-box select {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 15px;
+
+            border: 1px solid #ccc;
+            border-radius: 8px;
+
+            font-size: 14px;
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+        .register-box input:focus,
+        .register-box select:focus {
+            border-color: #b22222;
+
+            box-shadow:
+                0 0 5px rgba(178, 34, 34, 0.3);
+        }
+
+        /* Name Row */
+        .name-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .name-row div {
+            width: 50%;
+        }
+
+        /* Password Container */
+        .password-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-box input {
+            padding-right: 45px;
+        }
+
+        /* Eye Button */
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 11px;
+
+            cursor: pointer;
+            font-size: 18px;
+
+            user-select: none;
+        }
+
+        /* Password Message */
+        #passwordMessage {
+            font-size: 13px;
+            margin-top: -8px;
+            margin-bottom: 12px;
+        }
+
+        .error {
+            color: #b22222;
+        }
+
+        .success {
+            color: green;
+        }
+
+        /* Register Button */
+        input[type="submit"] {
+            background: #8b0000;
+            color: white;
+
+            border: none;
+            border-radius: 8px;
+
+            font-weight: bold;
+            font-size: 16px;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background: #b22222;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 5px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Bottom Text */
+        .register-box p {
+            text-align: center;
+            margin-top: 15px;
+            color: #555;
+        }
+
+        /* Links */
+        .register-box a {
+            color: #8b0000;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .register-box a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+
+            .container {
+                padding: 10px;
+            }
+
+            .container h1 {
+                font-size: 26px;
+            }
+
+            .container h2 {
+                font-size: 17px;
+            }
+
+            .register-box {
+                padding: 25px;
+            }
+
+            .name-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .name-row div {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Capitol University</h1>
+
+        <h2>Offense Management System</h2>
+
+        <div class="register-box">
+
+            <h3>Create Account</h3>
+
+            <form id="registerForm">
+            
+
+                <!-- Account Type -->
+                <label for="role">Register As</label>
+
+                <select
+                    id="role"
+                    name="role"
+                    required
+                >
+                    <option value="">Select Account Type</option>
+                    <option value="Faculty">Faculty</option>
+                    <option value="Student">Student</option>
+                    <option value="Admin">Admin</option>
+                </select>
+
+
+                <!-- First and Last Name -->
+                <div class="name-row">
+
+                    <div>
+                        <label for="firstname">
+                            First Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="firstname"
+                            name="firstname"
+                            placeholder="FIRSTNAME"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="lastname">
+                            Last Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="lastname"
+                            name="lastname"
+                            placeholder="LASTNAME"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <!-- Email -->
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+
+                <!-- Password -->
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-box">
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        minlength="8"
+                        required
+                    >
+
+                    <span
+                        class="toggle-password"
+                        onclick="togglePassword('password', this)"
+                    >
+                        👁️
+                    </span>
+
+                </div>
+
+
+                <!-- Confirm Password -->
+                <label for="confirmPassword">
+                    Confirm Password
+                </label>
+
+                <div class="password-box">
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Confirm your password"
+                        minlength="8"
+                        required
+                    >
+
+                    <span
+                        class="toggle-password"
+                        onclick="togglePassword('confirmPassword', this)"
+                    >
+                        👁️
+                    </span>
+
+                </div>
+
+
+                <!-- Password Status -->
+                <p id="passwordMessage"></p>
+
+
+                <!-- Register -->
+                <input
+                    type="submit"
+                    value="REGISTER"
+                >
+
+            </form>
+
+
+            <!-- Login -->
+            <p>
+                Already have an account?
+
+                <a href="index.html">
+                    Login Here
+                </a>
+            </p>
+
+
+            <!-- Back -->
+            <p>
+                <a href="index.html">
+                    🔙 Back
+                </a>
+            </p>
+
+        </div>
+
+    </div>
+
+
+<script>
+    const registerForm = document.getElementById("registerForm");
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const passwordMessage = document.getElementById("passwordMessage");
+
+    // Check password match (display only, NO saving here)
+    function checkPassword() {
+        if (confirmPassword.value === "") {
+            passwordMessage.textContent = "";
+            return;
+        }
+
+        if (password.value !== confirmPassword.value) {
+            passwordMessage.textContent = "Passwords do not match.";
+            passwordMessage.className = "error";
+        } else {
+            passwordMessage.textContent = "Passwords match.";
+            passwordMessage.className = "success";
+        }
+    }
+
+    password.addEventListener("input", checkPassword);
+    confirmPassword.addEventListener("input", checkPassword);
+
+    // Show / Hide Password
+    function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+
+        if (input.type === "password") {
+            input.type = "text";
+            button.textContent = "🙈";
+        } else {
+            input.type = "password";
+            button.textContent = "👁️";
+        }
+    }
+
+    // Form submit
+    registerForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const selectedRole = document.getElementById("role").value;
+        const firstName = document.getElementById("firstname").value.trim();
+        const lastName = document.getElementById("lastname").value.trim();
+        const email = document.getElementById("email").value.trim();
+
+        const passwordValue = password.value;
+        const confirmPasswordValue = confirmPassword.value;
+
+        if (selectedRole === "") {
+            alert("Please select an account type.");
+            return;
+        }
+
+        if (firstName === "" || lastName === "") {
+            alert("Please enter your complete name.");
+            return;
+        }
+
+        if (!email.includes("@")) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
+        if (passwordValue.length < 8) {
+            alert("Password must contain at least 8 characters.");
+            return;
+        }
+
+        if (passwordValue !== confirmPasswordValue) {
+            alert("Passwords do not match.");
+            return;
+        }
+
+        localStorage.setItem("registeredEmail", email.toLowerCase());
+        localStorage.setItem("registeredPassword", passwordValue);
+        localStorage.setItem("registeredRole", selectedRole);
+        localStorage.setItem("registeredName", firstName + " " + lastName);
+
+        alert("Registered Successfully!");
+        window.location.href = "index.html";
+    });
+</script>
+
+</body>
+</html>

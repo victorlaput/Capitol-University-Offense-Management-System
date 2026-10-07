@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin / Dean Dashboard - Capitol University</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Segoe UI, Arial, sans-serif; background: #f4f4f4; color: #222; }
+
+  header { background: #8B0000; color: #fff; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { font-size: 18px; }
+  header button { background: #fff; color: #8B0000; border: 0; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+
+  nav { background: #fff; display: flex; flex-wrap: wrap; border-bottom: 1px solid #ddd; }
+  nav button { background: none; border: 0; padding: 14px 18px; cursor: pointer; font-size: 14px; border-bottom: 3px solid transparent; }
+  nav button.active { border-bottom-color: #8B0000; color: #8B0000; font-weight: 600; }
+
+  main { max-width: 1000px; margin: 20px auto; padding: 0 16px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .stats { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat { background: #fff; padding: 14px 18px; border-radius: 6px; border-left: 4px solid #8B0000; flex: 1; min-width: 150px; }
+  .stat b { font-size: 26px; display: block; }
+
+  .box { background: #fff; padding: 16px; border-radius: 6px; margin-bottom: 16px; overflow-x: auto; }
+  .box h2 { font-size: 16px; margin-bottom: 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid #eee; }
+  th { background: #fafafa; }
+
+  .badge { padding: 3px 8px; border-radius: 10px; font-size: 12px; }
+  .pending { background: #fff3cd; color: #7a5b00; }
+  .confirmed { background: #d4edda; color: #1d5c2e; }
+  .major { color: #8B0000; font-weight: 600; }
+
+  button.btn { background: #8B0000; color: #fff; border: 0; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+  button.btn.gray { background: #777; }
+  input, select, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 100%; margin-bottom: 10px; font-family: inherit; }
+  .row { display: flex; gap: 8px; }
+  .row input { margin-bottom: 0; }
+  .empty { color: #777; padding: 14px 0; }
+  .msg { border-bottom: 1px solid #eee; padding: 10px 0; }
+  .reply { margin-left: 18px; color: #8B0000; font-size: 14px; }
+
+  dialog { border: 0; border-radius: 8px; padding: 20px; width: 92%; max-width: 420px; margin: auto; }
+  dialog::backdrop { background: rgba(0,0,0,.45); }
+  dialog h3 { margin-bottom: 10px; }
+  dialog p { margin-bottom: 6px; font-size: 14px; }
+  .buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Capitol University Offense Management System Admin</h1>
+  <button onclick="logout()">Logout</button>
+</header>
+
+<nav id="tabs">
+  <button class="active" id="btn-reports" onclick="showTab('reports')">Reported Violations</button>
+  <button id="btn-search" onclick="showTab('search')">Search Student</button>
+  <button id="btn-code" onclick="showTab('code')">Code of Conduct</button>
+  <button id="btn-inbox" onclick="showTab('inbox')">Inbox</button>
+  <button id="btn-settings" onclick="showTab('settings')">Settings</button>
+</nav>
+
+<main>
+
+  <!-- REPORTED VIOLATIONS -->
+  <div class="section active" id="reports">
+    <div class="stats">
+      <div class="stat"><b id="statPending">0</b>Pending</div>
+      <div class="stat"><b id="statConfirmed">0</b>Confirmed</div>
+      <div class="stat"><b id="statHours">0</b>Total CS hours assigned</div>
+    </div>
+    <div class="box">
+      <h2>Reported violations from faculty</h2>
+      <select id="filter" onchange="showReports()" style="max-width:200px">
+        <option value="All">All</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+      </select>
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Student ID</th><th>Name</th><th>Type</th><th>Status</th><th>CS Hours</th><th>Action</th></tr>
+        </thead>
+        <tbody id="reportsBody"></tbody>
+      </table>
+      <p class="empty" id="reportsEmpty" style="display:none">No reports yet.
+        <button class="btn gray" onclick="loadSampleData()">Load sample data</button></p>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="section" id="search">
+    <div class="box">
+      <h2>Search student</h2>
+      <div class="row">
+        <input type="text" id="searchInput" placeholder="Enter student ID or name">
+        <button class="btn" onclick="searchStudent()">Search</button>
+      </div>
+    </div>
+    <div class="box" id="searchResult" style="display:none"></div>
+  </div>
+
+  <!-- CODE OF CONDUCT -->
+  <div class="section" id="code">
+    <div class="box">
+      <h2>Major offenses</h2>
+      <ul style="margin-left:20px">
+        <li>Cheating on Exam</li>
+        <li>physical harm</li>
+        <li>Profanity</li>
+        <li>Damage School property</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Minor offenses</h2>
+      <ul style="margin-left:20px">
+        <li>Not wearing the proper uniform</li>
+        <li>Late or absent without valid reason</li>
+        <li>Shouting</li>
+        <li>Disrespectful behavior</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- INBOX -->
+  <div class="section" id="inbox">
+    <div class="box">
+      <h2>Messages received</h2>
+      <div id="messageList"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="section" id="settings">
+    <div class="box" style="max-width:420px">
+      <h2>Change password</h2>
+      <input type="password" id="currentPass" placeholder="Current password">
+      <input type="password" id="newPass" placeholder="New password">
+      <input type="password" id="confirmPass" placeholder="Confirm new password">
+      <button class="btn" onclick="changePassword()">Save password</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- DIALOG: confirm violation -->
+<dialog id="confirmDialog">
+  <h3>Confirm violation</h3>
+  <p id="confirmInfo"></p>
+  <label>Community Service hours</label>
+  <input type="number" id="csHours" min="0" value="0">
+  <label>Remarks (optional)</label>
+  <textarea id="adminRemarks" rows="2"></textarea>
+  <div class="buttons">
+    <button class="btn gray" onclick="confirmDialog.close()">Cancel</button>
+    <button class="btn" onclick="confirmViolation()">Confirm</button>
+  </div>
+</dialog>
+
+<!-- DIALOG: more information -->
+<dialog id="infoDialog">
+  <h3>Incident information</h3>
+  <div id="infoBody"></div>
+  <div class="buttons"><button class="btn" onclick="infoDialog.close()">Close</button></div>
+</dialog>
+
+<script>
+  // ===== 1. SAVE AND GET DATA (localStorage) =====
+  // Reports are saved under the key "offenseReports" (same key as the Faculty dashboard)
+
+  function getReports() {
+    var data = localStorage.getItem("offenseReports");
+    if (data == null) {
+      return [];
+    }
+    return JSON.parse(data);
+  }
+
+  function saveReports(reports) {
+    localStorage.setItem("offenseReports", JSON.stringify(reports));
+  }
+
+  function getMessages() {
+    var data = localStorage.getItem("adminMessages");
+    if (data == null) {
+      return [];
+    }
+    return JSON.parse(data);
+  }
+
+  function saveMessages(messages) {
+    localStorage.setItem("adminMessages", JSON.stringify(messages));
+  }
+
+
+  // ===== 2. TABS =====
+
+  function showTab(tabName) {
+    var tabs = ["reports", "search", "code", "inbox", "settings"];
+
+    for (var i = 0; i < tabs.length; i++) {
+      document.getElementById(tabs[i]).classList.remove("active");
+      document.getElementById("btn-" + tabs[i]).classList.remove("active");
+    }
+
+    document.getElementById(tabName).classList.add("active");
+    document.getElementById("btn-" + tabName).classList.add("active");
+
+    if (tabName == "inbox") {
+      showMessages();
+    }
+  }
+
+
+  // ===== 3. REPORTED VIOLATIONS =====
+
+  function showReports() {
+    var reports = getReports();
+    var filter = document.getElementById("filter").value;
+    var rows = "";
+    var pending = 0;
+    var confirmed = 0;
+    var totalHours = 0;
+
+    for (var i = 0; i < reports.length; i++) {
+      var r = reports[i];
+
+      // count for the top boxes
+      if (r.status == "Confirmed") {
+        confirmed = confirmed + 1;
+        totalHours = totalHours + Number(r.csHours);
+      } else {
+        pending = pending + 1;
+      }
+
+      // skip the report if it does not match the filter
+      if (filter != "All" && filter != r.status) {
+        continue;
+      }
+
+      // buttons: View info always, Confirm only if still pending
+      var buttons = "<button class='btn gray' onclick='viewInfo(" + i + ")'>View info</button> ";
+      if (r.status != "Confirmed") {
+        buttons = buttons + "<button class='btn' onclick='openConfirm(" + i + ")'>Confirm</button>";
+      }
+
+      var hours = "-";
+      if (r.status == "Confirmed") {
+        hours = r.csHours;
+      }
+
+      var typeClass = "";
+      if (r.type == "Major") {
+        typeClass = "major";
+      }
+
+      rows = rows + "<tr>" +
+        "<td>" + r.date + "</td>" +
+        "<td>" + r.studentId + "</td>" +
+        "<td>" + r.name + "</td>" +
+        "<td class='" + typeClass + "'>" + r.type + "</td>" +
+        "<td><span class='badge " + r.status.toLowerCase() + "'>" + r.status + "</span></td>" +
+        "<td>" + hours + "</td>" +
+        "<td>" + buttons + "</td>" +
+        "</tr>";
+    }
+
+    document.getElementById("reportsBody").innerHTML = rows;
+    document.getElementById("statPending").innerHTML = pending;
+    document.getElementById("statConfirmed").innerHTML = confirmed;
+    document.getElementById("statHours").innerHTML = totalHours;
+
+    // show "No reports yet" message if the list is empty
+    if (reports.length == 0) {
+      document.getElementById("reportsEmpty").style.display = "block";
+    } else {
+      document.getElementById("reportsEmpty").style.display = "none";
+    }
+  }
+
+  // remembers which report the Dean is confirming
+  var selectedIndex = 0;
+
+  function openConfirm(index) {
+    selectedIndex = index;
+    var r = getReports()[index];
+
+    document.getElementById("confirmInfo").innerHTML = r.name + " (" + r.studentId + ") - " + r.violation;
+    document.getElementById("adminRemarks").value = "";
+
+    // suggested hours: 20 for Major, 5 for Minor (the Dean can change it)
+    if (r.type == "Major") {
+      document.getElementById("csHours").value = 20;
+    } else {
+      document.getElementById("csHours").value = 5;
+    }
+
+    document.getElementById("confirmDialog").showModal();
+  }
+
+  function confirmViolation() {
+    var hours = Number(document.getElementById("csHours").value);
+
+    if (isNaN(hours) || hours < 0) {
+      alert("Enter a valid number of hours.");
+      return;
+    }
+
+    var reports = getReports();
+    reports[selectedIndex].status = "Confirmed";
+    reports[selectedIndex].csHours = hours;
+    reports[selectedIndex].adminRemarks = document.getElementById("adminRemarks").value;
+    reports[selectedIndex].dateConfirmed = new Date().toLocaleDateString();
+    saveReports(reports);
+
+    document.getElementById("confirmDialog").close();
+    showReports();
+  }
+
+  function viewInfo(index) {
+    var r = getReports()[index];
+
+    var text = "<p><b>Student:</b> " + r.name + " (" + r.studentId + ")</p>" +
+      "<p><b>Date reported:</b> " + r.date + "</p>" +
+      "<p><b>Offense type:</b> " + r.type + " - " + r.category + "</p>" +
+      "<p><b>Violation:</b> " + r.violation + "</p>" +
+      "<p><b>Faculty remarks:</b> " + r.remarks + "</p>" +
+      "<p><b>Status:</b> " + r.status + "</p>";
+
+    if (r.status == "Confirmed") {
+      text = text + "<p><b>CS hours:</b> " + r.csHours + "</p>";
+    }
+
+    document.getElementById("infoBody").innerHTML = text;
+    document.getElementById("infoDialog").showModal();
+  }
+
+  function loadSampleData() {
+    var sample = [
+      { id: 1, date: "2026-10-01", studentId: "2022-0001", name: "Juan Dela Cruz", type: "Minor", category: "First Warning", violation: "No ID", remarks: "Seen without ID", status: "Pending", csHours: 0 },
+      { id: 2, date: "2026-10-03", studentId: "2022-0002", name: "Maria Santos", type: "Major", category: "Second Warning", violation: "Cheating during exam", remarks: "Copied from seatmate", status: "Pending", csHours: 0 }
+    ];
+    saveReports(sample);
+    showReports();
+  }
+
+
+  // ===== 4. SEARCH STUDENT =====
+
+  function searchStudent() {
+    var text = document.getElementById("searchInput").value.trim().toLowerCase();
+    var box = document.getElementById("searchResult");
+
+    if (text == "") {
+      alert("Enter a student ID or name.");
+      return;
+    }
+
+    var reports = getReports();
+    var rows = "";
+    var count = 0;
+    var totalHours = 0;
+    var studentName = "";
+    var studentId = "";
+
+    for (var i = 0; i < reports.length; i++) {
+      var r = reports[i];
+      var id = r.studentId.toLowerCase();
+      var name = r.name.toLowerCase();
+
+      // match if the text is found in the ID or in the name
+      if (id.indexOf(text) != -1 || name.indexOf(text) != -1) {
+        count = count + 1;
+        studentName = r.name;
+        studentId = r.studentId;
+
+        if (r.status == "Confirmed") {
+          totalHours = totalHours + Number(r.csHours);
+        }
+
+        rows = rows + "<tr><td>" + r.date + "</td><td>" + r.type + "</td><td>" + r.violation +
+          "</td><td>" + r.status + "</td><td>" + r.csHours + "</td></tr>";
+      }
+    }
+
+    box.style.display = "block";
+
+    if (count == 0) {
+      box.innerHTML = "<p class='empty'>No student found.</p>";
+      return;
+    }
+
+    box.innerHTML = "<h2>" + studentName + " (" + studentId + ")</h2>" +
+      "<p style='margin-bottom:10px'>Total offenses: <b>" + count + "</b> | Confirmed CS hours: <b>" + totalHours + "</b></p>" +
+      "<table><tr><th>Date</th><th>Type</th><th>Violation</th><th>Status</th><th>CS Hours</th></tr>" + rows + "</table>";
+  }
+
+
+  // ===== 5. INBOX =====
+
+  function showMessages() {
+    var messages = getMessages();
+    var box = document.getElementById("messageList");
+
+    if (messages.length == 0) {
+      box.innerHTML = "<p class='empty'>No messages yet. Messages from students will show here.</p>" +
+        "<button class='btn gray' onclick='addSampleMessage()'>Add sample message</button>";
+      return;
+    }
+
+    var text = "";
+    for (var i = 0; i < messages.length; i++) {
+      var m = messages[i];
+      text = text + "<div class='msg'><b>" + m.from + "</b>: " + m.text;
+
+      if (m.reply != "") {
+        text = text + "<div class='reply'>Your reply: " + m.reply + "</div>";
+      } else {
+        text = text + "<div class='row' style='margin-top:6px'>" +
+          "<input id='reply" + i + "' placeholder='Type your reply'>" +
+          "<button class='btn' onclick='sendReply(" + i + ")'>Send</button></div>";
+      }
+
+      text = text + "</div>";
+    }
+    box.innerHTML = text;
+  }
+
+  function sendReply(index) {
+    var reply = document.getElementById("reply" + index).value.trim();
+
+    if (reply == "") {
+      alert("Type a message first.");
+      return;
+    }
+
+    var messages = getMessages();
+    messages[index].reply = reply;
+    saveMessages(messages);
+    showMessages();
+  }
+
+  function addSampleMessage() {
+    var sample = [
+      { from: "Juan Dela Cruz (2022-0001)", text: "Good day, can I ask about my CS hours?", reply: "" }
+    ];
+    saveMessages(sample);
+    showMessages();
+  }
+
+
+  // ===== 6. SETTINGS =====
+
+  function changePassword() {
+    var currentPass = document.getElementById("currentPass").value;
+    var newPass = document.getElementById("newPass").value;
+    var confirmPass = document.getElementById("confirmPass").value;
+
+    if (currentPass != localStorage.getItem("registeredPassword")) {
+      alert("Current password is wrong.");
+      return;
+    }
+    if (newPass.length < 6) {
+      alert("New password must be at least 6 characters.");
+      return;
+    }
+    if (newPass != confirmPass) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    localStorage.setItem("registeredPassword", newPass);
+    alert("Password saved.");
+
+    document.getElementById("currentPass").value = "";
+    document.getElementById("newPass").value = "";
+    document.getElementById("confirmPass").value = "";
+  }
+
+  function logout() {
+    window.location.href = "Home.html";
+  }
+
+
+  // ===== START =====
+  showReports();
+</script>
+</body>
+</html>
