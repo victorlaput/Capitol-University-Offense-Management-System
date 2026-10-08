@@ -106,7 +106,7 @@
             </form>
 
             <p class="back">
-                <a href="index.html">← Back to Home</a>
+                <a href="Home.html">← Back to Home</a>
             </p>
 
         </div>
@@ -119,42 +119,40 @@
 
     <script>
 
-    const studentLogin = document.getElementById("studentLogin");
+        const studentLogin = document.getElementById("studentLogin");
 
-    studentLogin.addEventListener("submit", function (event) {
-        event.preventDefault();
+        studentLogin.addEventListener("submit", function (event) {
+            event.preventDefault();
 
-        const email = document.getElementById("email").value.trim().toLowerCase();
-        const passwordValue = document.getElementById("password").value;
+            const email = document.getElementById("email").value.trim().toLowerCase();
+            const passwordValue = document.getElementById("password").value;
 
-        const savedEmail = localStorage.getItem("registeredEmail");
-        const savedPassword = localStorage.getItem("registeredPassword");
-        const savedRole = localStorage.getItem("registeredRole");
+            const savedEmail = localStorage.getItem("registeredEmail");
+            const savedPassword = localStorage.getItem("registeredPassword");
+            const savedRole = localStorage.getItem("registeredRole");
 
-        if (savedEmail === null) {
-            alert("No account found,Please register first.");
-            return;
-        }
+            if (savedEmail === null) {
+                alert("No account found,Please register first.");
+                return;
+            }
 
-        if (email !== savedEmail || passwordValue !== savedPassword) {
-            alert("Invalid email or password");
-            return;
-        }
+            if (email !== savedEmail || passwordValue !== savedPassword) {
+                alert("Invalid email or password");
+                return;
+            }
 
-        if (savedRole !== "Student") {
-            alert("This account is not a student account.");
-            return;
-        }
-        else {
-            alert("Login successful!");
-        window.location.href = "studentdashboard.html";
-        }
-
-        localStorage.setItem("loggedInStudentEmail", savedEmail);
-
-        window.location.href = "studentdashboard.html";
-        
-    });
-</script>
+            if (savedRole !== "Student") {
+                alert("This account is not a student account.");
+                return;
+            }
+            else {
+                localStorage.setItem("loggedInStudentEmail", email);
+                localStorage.setItem("loggedInStudentName", localStorage.getItem("registeredName") || email);
+                alert("Login successful!");
+                window.location.href = "studentdashboard.html";
+            }
+        });
+    </script>
 </body>
+</head>
 </html>
