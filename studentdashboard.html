@@ -436,7 +436,7 @@
                 return;
             }
 
-            document.getElementById("studentName").textContent = "Welcome, " + name + "!";
+            document.getElementById("studentName").textContent = "Welcome, " + name + "";
 
             // Get all offense reports
             var all = JSON.parse(localStorage.getItem("offenseReports") || "[]");
