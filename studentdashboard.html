@@ -2,7 +2,6 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <head>
     <title>Student Dashboard</title>
     <style>
@@ -31,8 +30,8 @@
             padding: 6px 30px;
             border: none;
             border-radius: 4px;
-            background:white;
-            color:black;
+            background: white;
+            color: maroon;
             font-size: 14px;
             font-weight: bold;
         }
@@ -370,6 +369,7 @@
                         <th>Violation</th>
                         <th>CS Hours</th>
                         <th>Remarks</th>
+                        <th>Status</th>
                     </tr>
                 </table>
             </div>
@@ -436,7 +436,7 @@
                 return;
             }
 
-            document.getElementById("studentName").textContent = "Welcome, " + name + "";
+            document.getElementById("studentName").textContent = "Welcome, " + name + "!";
 
             // Get all offense reports
             var all = JSON.parse(localStorage.getItem("offenseReports") || "[]");
@@ -470,9 +470,15 @@
                     row.insertCell().textContent = r.offenseType || r.type || "";
                     row.insertCell().textContent = r.offenseCategory || r.category || "";
                     row.insertCell().textContent = r.specificViolation || r.violation || "";
-                    var reportHours = Number(r.hours || r.communityServiceHours || 0);
+                    var reportHours = r.status === "Confirmed"
+                        ? Number(r.csHours || 0)
+                        : 0;
                     row.insertCell().textContent = reportHours;
-                    row.insertCell().textContent = r.remarks || "";
+                    var remarks = [r.remarks, r.adminRemarks].filter(function (remark) {
+                        return String(remark || "").trim() !== "";
+                    });
+                    row.insertCell().textContent = remarks.join(" | ");
+                    row.insertCell().textContent = r.status || "Pending";
 
                     count++;
                     if (Number.isFinite(reportHours)) {
@@ -502,6 +508,13 @@
             document.getElementById("studentId").value = "2095294";
             showOffenses();
         }
+
+        window.addEventListener("storage", function (event) {
+            if (event.key === KEY) {
+                showOffenses();
+            }
+        });
+        window.addEventListener("focus", showOffenses);
 
 
         var slides = [
@@ -608,9 +621,7 @@
         buildSlideshow();
         buildGallery();
 
-
         showOffenses();
     </script>
 </body>
-</head>
 </html>
