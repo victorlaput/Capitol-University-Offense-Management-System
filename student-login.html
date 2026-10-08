@@ -149,6 +149,11 @@
             alert("Login successful!");
         window.location.href = "studentdashboard.html";
         }
+
+        localStorage.setItem("loggedInStudentEmail", savedEmail);
+
+        window.location.href = "studentdashboard.html";
+        
     });
 </script>
 </body>
