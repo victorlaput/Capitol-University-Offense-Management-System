@@ -429,12 +429,9 @@
             var email = (localStorage.getItem("loggedInStudentEmail") || "").trim().toLowerCase();
             var name = (localStorage.getItem("loggedInStudentName") || "").trim();
             var id = localStorage.getItem("loggedInStudentId") || "";
+        }
 
-            if (!email && !name) {
-                alert("Student information not found. Please login again.");
-                window.location.href = "student-login.html";
-                return;
-            }
+            
 
             document.getElementById("studentName").textContent = "Welcome, " + name + "!";
 
