@@ -1,78 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Faculty | Capitol University</title>
-
   <style>
-    /* ---------- BASIC STYLES ---------- */
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background: #f2f2f2;
       margin: 0;
+      color: #222;
     }
 
     .header {
       background: maroon;
       color: white;
-      padding: 15px 20px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
     }
 
     .header h1 {
       margin: 0;
-      font-size: 24px;
+      font-size: 22px;
     }
 
     .header p {
-      margin: 5px 0 0;
+      margin: 4px 0 0;
+      font-size: 14px;
+    }
+
+    /* Tabs */
+    .tabs {
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      overflow-x: auto;
+      padding: 0 12px;
+    }
+
+    .tab {
+      border: none;
+      background: none;
+      padding: 14px 16px;
+      font-size: 15px;
+      cursor: pointer;
+      color: #555;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+
+    .tab:hover {
+      color: maroon;
+    }
+
+    .tab.active {
+      color: maroon;
+      font-weight: bold;
+      border-bottom-color: maroon;
     }
 
     .container {
       max-width: 800px;
       margin: 20px auto;
+      padding: 0 12px;
+    }
+
+    .panel {
+      display: none;
       background: white;
       padding: 20px;
       border-radius: 6px;
     }
 
+    .panel.active {
+      display: block;
+    }
+
     h2 {
-      margin-top: 25px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 5px;
+      margin: 0 0 14px;
+      font-size: 18px;
+      color: maroon;
+    }
+
+    h3 {
+      margin: 22px 0 8px;
+      font-size: 15px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
     }
 
     label {
       display: block;
       margin-top: 12px;
       font-weight: bold;
+      font-size: 14px;
     }
 
     input,
     select,
     textarea {
       width: 100%;
-      padding: 8px;
+      padding: 9px;
       margin-top: 4px;
-      box-sizing: border-box;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus,
+    button:focus-visible {
+      outline: 2px solid maroon;
+      outline-offset: 1px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
     }
 
     .error {
-      color: red;
+      color: #c00;
       font-size: 13px;
+      min-height: 4px;
     }
 
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      cursor: pointer;
-    }
-
-    #message {
+    #message,
+    #settingsMessage {
       color: green;
       font-weight: bold;
-      margin-top: 15px;
+      margin-top: 12px;
     }
 
     #scanMessage {
@@ -81,7 +154,56 @@
       font-weight: bold;
     }
 
-    /* Table of saved reports */
+    button {
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn {
+      background: maroon;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      margin-top: 18px;
+    }
+
+    .btn:hover {
+      background: #5c0000;
+    }
+
+    .btn-light {
+      background: white;
+      color: maroon;
+      border: 1px solid maroon;
+      border-radius: 4px;
+      padding: 10px 20px;
+      margin-top: 18px;
+    }
+
+    .btn-danger {
+      background: white;
+      color: #c00;
+      border: 1px solid #c00;
+      border-radius: 4px;
+      padding: 10px 20px;
+    }
+
+    .logout-button {
+      background: white;
+      color: maroon;
+      border: none;
+      border-radius: 4px;
+      padding: 9px 14px;
+      font-weight: bold;
+    }
+
+    .small-button {
+      padding: 4px 8px;
+      margin: 0;
+    }
+
+    /* Table */
     .table-box {
       overflow-x: auto;
     }
@@ -89,43 +211,35 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
       font-size: 14px;
     }
 
     th,
     td {
-      border: 1px solid #ccc;
-      padding: 6px;
+      border: 1px solid #ddd;
+      padding: 7px;
       text-align: left;
     }
 
     th {
-      background: #e8eaf0;
+      background: #f4e6e6;
     }
 
-    .small-button {
-      margin: 0;
-      padding: 4px 8px;
-    }
-
-    .back {
-      margin: 0 0 0pxs;
-    }
 
     .back a {
       display: inline-block;
       padding: 8px 14px;
-      border: 1px solid #1c2540;
+      border: 1px solid maroon;
       border-radius: 6px;
-      color: #1c2540;
+      color: maroon;
       background: white;
       text-decoration: none;
       font-weight: bold;
+      margin-top: 16px;
     }
 
     .back a:hover {
-      background: #1c2540;
+      background: maroon;
       color: white;
     }
   </style>
@@ -134,108 +248,217 @@
 <body>
 
   <div class="header">
-    <h1>Capitol University</h1>
-    <p>Faculty - Offense Management System</p>
+    <div>
+      <h1>Capitol University</h1>
+      <p>Faculty: <span id="facultyName">Faculty</span></p>
+    </div>
+    <button type="button" class="logout-button" onclick="logout()">Log out</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" id="tab-report" onclick="showTab('report')">Report Offense</button>
+    <button class="tab" id="tab-saved" onclick="showTab('saved')">Saved Reports</button>
+    <button class="tab" id="tab-settings" onclick="showTab('settings')">Settings</button>
   </div>
 
   <div class="container">
 
-    <form id="offenseForm">
+    <!-- REPORT OFFENSE -->
+    <div class="panel active" id="panel-report">
+      <form id="offenseForm">
+        <h2>Report an Offense</h2>
 
-      <h2>Student Information</h2>
+        <h3>Student Information</h3>
+        <label for="studentId">Student ID (scan the barcode on the back of the ID)</label>
+        <input type="text" id="studentId" placeholder="Scan or type the Student ID" autocomplete="off" autofocus>
+        <div class="error" id="studentIdError"></div>
+        <div id="scanMessage"></div>
 
-      <label for="studentId">Student ID (scan the barcode back of your ID)</label>
-      <input type="text" id="studentId" placeholder="Enter the studentId" autocomplete="off" autofocus>
-      <div class="error" id="studentIdError"></div>
-      <div id="scanMessage"></div>
+        <div class="row">
+          <div>
+            <label for="studentName">Full Name</label>
+            <input type="text" id="studentName" placeholder="Student's full name">
+            <div class="error" id="studentNameError"></div>
+          </div>
+          <div>
+            <label for="studentEmail">Email</label>
+            <input type="email" id="studentEmail" placeholder="Student's email">
+            <div class="error" id="studentEmailError"></div>
+          </div>
+        </div>
 
-      <label for="studentName">Full Name</label>
-      <input type="text" id="studentName" placeholder="Enter your Full name">
-      <div class="error" id="studentNameError"></div>
+        <h3>Offense Details</h3>
+        <div class="row">
+          <div>
+            <label for="offenseType">Offense Type</label>
+            <select id="offenseType" onchange="updateCategories()">
+              <option value="">Select Offense Type</option>
+              <option value="Minor">Minor Offense</option>
+              <option value="Major">Major Offense</option>
+            </select>
+            <div class="error" id="offenseTypeError"></div>
+          </div>
+          <div>
+            <label for="offenseCategory">Offense Category</label>
+            <select id="offenseCategory">
+              <option value="">Select Offense Type first</option>
+            </select>
+            <div class="error" id="offenseCategoryError"></div>
+          </div>
+        </div>
 
-      <label for="studentEmail">Email</label>
-      <input type="email" id="studentEmail" placeholder="Enter your email">
-      <div class="error" id="studentEmailError"></div>
+        <label for="specificViolation">Specific Violation</label>
+        <input type="text" id="specificViolation" placeholder="e.g. Tardiness, sleeping in class">
+        <div class="error" id="specificViolationError"></div>
 
-      <h2>Offense Details</h2>
+        <label for="communityServiceHours">Community Service Hours</label>
+        <input type="number" id="communityServiceHours" min="0" step="0.5" value="0">
 
-      <label for="offenseType">Offense Type</label>
-      <select id="offenseType" onchange="updateCategories()">
-        <option value="">Select Offense Type</option>
-        <option value="Minor">Minor Offense</option>
-        <option value="Major">Major Offense</option>
-      </select>
-      <div class="error" id="offenseTypeError"></div>
+        <label for="remarks">Remarks (optional)</label>
+        <textarea id="remarks" rows="3" placeholder="Location, time, witnesses, circumstances..."></textarea>
 
-      <label for="offenseCategory">Offense Category</label>
-      <select id="offenseCategory">
-        <option value="">Select Offense Type first</option>
-      </select>
-      <div class="error" id="offenseCategoryError"></div>
-
-      <label for="specificViolation">Specific Violation</label>
-      <input type="text" id="specificViolation" placeholder="e.g. Tardiness, sleeping in class">
-      <div class="error" id="specificViolationError"></div>
-
-      <label for="communityServiceHours">Community Service Hours</label>
-      <input type="number" id="communityServiceHours" min="0" step="0.5" value="0" placeholder="Enter assigned hours">
-
-      <label for="remarks">Remarks (optional)</label>
-      <textarea id="remarks" rows="3"
-        placeholder="Provide details about the Violation: location time,witness,circumtances..."></textarea>
-
-      <button type="submit">Submit</button>
-      <button type="reset" onclick="clearMessages()">Clear</button>
-
-      <div id="message"></div>
-    </form>
-    
-    <h2>Saved Offense Reports</h2>
-    <div class="table-box">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Student ID</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Category</th>
-            <th>Violation</th>
-            <th>CS Hours</th>
-            <th>Remarks</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="reportTable"></tbody>
-      </table>
+        <button type="submit" class="btn">Submit</button>
+        <button type="reset" class="btn-light" onclick="clearMessages()">Clear</button>
+        <div id="message"></div>
+      </form>
     </div>
-    <button type="button" onclick="deleteAll()">Delete all reports</button>
 
-    <p class="back">
-      <a href="Home.html">← Back to Home</a>
-    </p>
+    <!-- SAVED REPORTS -->
+    <div class="panel" id="panel-saved">
+      <h2>Saved Offense Reports</h2>
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Violation</th>
+              <th>CS Hours</th>
+              <th>Remarks</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="reportTable"></tbody>
+        </table>
+      </div>
+      <button type="button" class="btn-danger" style="margin-top:14px" onclick="deleteAll()">Delete all reports</button>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <h2>Settings</h2>
+
+      <h3>Change Password</h3>
+      <p style="font-size:14px;margin-top:0">change you password if you want to.</p>
+
+      <label for="currentPassword">Current password</label>
+      <input type="password" id="currentPassword" autocomplete="current-password">
+      <div class="error" id="currentPasswordError"></div>
+
+      <label for="newPassword">New password</label>
+      <input type="password" id="newPassword" autocomplete="new-password">
+      <div class="error" id="newPasswordError"></div>
+
+      <label for="confirmNewPassword">Confirm new password</label>
+      <input type="password" id="confirmNewPassword" autocomplete="new-password">
+      <div class="error" id="confirmNewPasswordError"></div>
+
+      <button class="btn" onclick="changePassword()">Change password</button>
+      <div id="settingsMessage"></div>
+    </div>
+
+    <p class="back"><a href="Home.html">← Back to Home</a></p>
   </div>
+
   <script>
+    // ---------- TABS ----------
+    function showTab(name) {
+      var names = ["report", "saved", "settings"];
+      for (var i = 0; i < names.length; i++) {
+        document.getElementById("panel-" + names[i]).className = "panel";
+        document.getElementById("tab-" + names[i]).className = "tab";
+      }
+      document.getElementById("panel-" + name).className = "panel active";
+      document.getElementById("tab-" + name).className = "tab active";
+    }
 
-    // Category lists (edit these to match your student handbook)
-    var minorList = ["First warning", "Second warning", "Third warning"];
-    var majorList = ["Suspension", "Exclusion", "Expulsion"];
+    // ---------- LOGIN / SETTINGS ----------
+    function logout() {
+      if (!confirm("Are you sure you want to log out?")) { return; }
+      localStorage.removeItem("loggedInFacultyEmail");
+      localStorage.removeItem("loggedInFacultyName");
+      window.location.href = "faculty-login.html";
+    }
 
+    function getFacultyName() {
+      return localStorage.getItem("loggedInFacultyName") || "Faculty";
+    }
 
-    // ----- STUDENT LIST (edit this: add your students here) -----
-    // When an ID is scanned, the name and email are filled in from this list.
+    function loadSettings() {
+      document.getElementById("facultyName").innerHTML = escapeHtml(getFacultyName());
+    }
+
+    function changePassword() {
+      var current = document.getElementById("currentPassword").value;
+      var newPass = document.getElementById("newPassword").value;
+      var confirmPass = document.getElementById("confirmNewPassword").value;
+      var message = document.getElementById("settingsMessage");
+      message.innerHTML = "";
+
+      document.getElementById("currentPasswordError").innerHTML = "";
+      document.getElementById("newPasswordError").innerHTML = "";
+      document.getElementById("confirmNewPasswordError").innerHTML = "";
+
+      // The password saved when the faculty registered
+      var savedPassword = localStorage.getItem("registeredPassword");
+
+      if (current !== savedPassword) {
+        document.getElementById("currentPasswordError").innerHTML = "Current password is incorrect.";
+        return;
+      }
+      if (newPass.length < 6) {
+        document.getElementById("newPasswordError").innerHTML = "New password must be at least 6 characters.";
+        return;
+      }
+      if (newPass === current) {
+        document.getElementById("newPasswordError").innerHTML = "New password must be different from the current one.";
+        return;
+      }
+      if (confirmPass !== newPass) {
+        document.getElementById("confirmNewPasswordError").innerHTML = "Passwords do not match.";
+        return;
+      }
+
+      localStorage.setItem("registeredPassword", newPass);
+      document.getElementById("currentPassword").value = "";
+      document.getElementById("newPassword").value = "";
+      document.getElementById("confirmNewPassword").value = "";
+      message.innerHTML = "Password changed.";
+    }
+
+    function escapeHtml(text) {
+      var div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---------- STUDENT LIST (edit this) ----------
     var students = [
       { id: "2024001", name: "Juan Dela Cruz", email: "juan@example.com" },
       { id: "2024002", name: "Maria Santos", email: "maria@example.com" },
       { id: "2024003", name: "Pedro Reyes", email: "pedro@example.com" }
     ];
-    // ----- BARCODE SCANNING -----
-    // A barcode scanner works like a keyboard: it types the ID number
-    // and then presses Enter. So we listen for the Enter key.
 
+    var minorList = ["First warning", "Second warning", "Third warning"];
+    var majorList = ["Suspension", "Exclusion", "Expulsion"];
+
+    // ---------- BARCODE SCANNING (scanner types the ID, then presses Enter) ----------
     document.getElementById("studentId").onkeydown = function (event) {
       if (event.key === "Enter") {
-        event.preventDefault();     // stop Enter from submitting the form
+        event.preventDefault();
         findStudent();
       }
     };
@@ -243,28 +466,20 @@
     function findStudent() {
       var scanned = document.getElementById("studentId").value.trim();
       var scanMessage = document.getElementById("scanMessage");
+      if (scanned === "") { return; }
 
-      if (scanned === "") {
-        return;
-      }
-
-      // Look for the scanned ID in the student list
       var found = null;
       for (var i = 0; i < students.length; i++) {
-        if (students[i].id === scanned) {
-          found = students[i];
-        }
+        if (students[i].id === scanned) { found = students[i]; }
       }
 
       if (found !== null) {
-        // Student found: fill in the name and email
         document.getElementById("studentName").value = found.name;
         document.getElementById("studentEmail").value = found.email;
         scanMessage.style.color = "green";
-        scanMessage.innerHTML = "Student found: " + found.name;
-        document.getElementById("offenseType").focus();   // go to the next step
+        scanMessage.innerHTML = "Student found: " + escapeHtml(found.name);
+        document.getElementById("offenseType").focus();
       } else {
-        // Student not found: type the name and email by hand
         document.getElementById("studentName").value = "";
         document.getElementById("studentEmail").value = "";
         scanMessage.style.color = "red";
@@ -273,53 +488,44 @@
       }
     }
 
-    // ----- LOAD AND SAVE (uses the browser's localStorage, no database) -----
-
-    // Get all saved reports. Returns an empty list if nothing is saved yet.
+    // ---------- REPORTS (localStorage) ----------
     function getReports() {
       var saved = localStorage.getItem("offenseReports");
-      if (saved === null) {
-        return [];
-      }
+      if (saved === null) { return []; }
       return JSON.parse(saved);
     }
-    // Save the whole list of reports.
+
     function saveReports(list) {
       localStorage.setItem("offenseReports", JSON.stringify(list));
     }
-    // ----- SHOW THE TABLE -----
 
     function showReports() {
       var list = getReports();
       var rows = "";
-
       if (list.length === 0) {
         rows = "<tr><td colspan='9'>No reports yet.</td></tr>";
       }
-
       for (var i = 0; i < list.length; i++) {
         var r = list[i];
         rows += "<tr>" +
-          "<td>" + r.date + "</td>" +
-          "<td>" + r.studentId + "</td>" +
-          "<td>" + r.studentName + "</td>" +
-          "<td>" + r.offenseType + "</td>" +
-          "<td>" + r.offenseCategory + "</td>" +
-          "<td>" + r.specificViolation + "</td>" +
+          "<td>" + escapeHtml(r.date) + "</td>" +
+          "<td>" + escapeHtml(r.studentId) + "</td>" +
+          "<td>" + escapeHtml(r.studentName) + "</td>" +
+          "<td>" + escapeHtml(r.offenseType) + "</td>" +
+          "<td>" + escapeHtml(r.offenseCategory) + "</td>" +
+          "<td>" + escapeHtml(r.specificViolation) + "</td>" +
           "<td>" + (r.hours || 0) + "</td>" +
-          "<td>" + r.remarks + "</td>" +
-          "<td><button class='small-button' onclick='deleteReport(" + i + ")'>Delete</button></td>" +
+          "<td>" + escapeHtml(r.remarks) + "</td>" +
+          "<td><button class='btn-danger small-button' onclick='deleteReport(" + i + ")'>Delete</button></td>" +
           "</tr>";
       }
-
       document.getElementById("reportTable").innerHTML = rows;
     }
-    // ----- DELETE -----
 
     function deleteReport(index) {
       if (confirm("Delete this report?")) {
         var list = getReports();
-        list.splice(index, 1);      // remove 1 item at this position
+        list.splice(index, 1);
         saveReports(list);
         showReports();
       }
@@ -331,40 +537,28 @@
         showReports();
       }
     }
-    // ----- CATEGORY DROPDOWN -----
 
+    // ---------- FORM ----------
     function updateCategories() {
       var type = document.getElementById("offenseType").value;
       var category = document.getElementById("offenseCategory");
       var list = [];
-
-      if (type === "Minor") {
-        list = minorList;
-      } else if (type === "Major") {
-        list = majorList;
-      }
+      if (type === "Minor") { list = minorList; }
+      else if (type === "Major") { list = majorList; }
 
       category.innerHTML = "<option value=''>Select Offense Category</option>";
-
       for (var i = 0; i < list.length; i++) {
         category.innerHTML += "<option value='" + list[i] + "'>" + list[i] + "</option>";
       }
     }
-    // ----- CHECK ONE FIELD -----
 
     function checkField(fieldId, errorMessage) {
       var value = document.getElementById(fieldId).value.trim();
       var errorBox = document.getElementById(fieldId + "Error");
-
-      if (value === "") {
-        errorBox.innerHTML = errorMessage;
-        return false;
-      } else {
-        errorBox.innerHTML = "";
-        return true;
-      }
+      if (value === "") { errorBox.innerHTML = errorMessage; return false; }
+      errorBox.innerHTML = "";
+      return true;
     }
-    // ----- SUBMIT -----
 
     document.getElementById("offenseForm").onsubmit = function (event) {
       event.preventDefault();
@@ -375,12 +569,8 @@
       var ok4 = checkField("offenseType", "Please select an Offense Type.");
       var ok5 = checkField("offenseCategory", "Please select an Offense Category.");
       var ok6 = checkField("specificViolation", "Please enter the Specific Violation.");
+      if (!ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6) { return; }
 
-      if (!ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6) {
-        return;
-      }
-
-      // Make one report
       var report = {
         date: new Date().toLocaleString(),
         studentId: document.getElementById("studentId").value.trim(),
@@ -393,34 +583,28 @@
         remarks: document.getElementById("remarks").value.trim()
       };
 
-      // Add it to the saved list
       var list = getReports();
       list.push(report);
       saveReports(list);
 
-      // Update the screen
       showReports();
-      document.getElementById("message").innerHTML = "Offense report saved!";
       document.getElementById("offenseForm").reset();
       updateCategories();
       document.getElementById("scanMessage").innerHTML = "";
-      document.getElementById("studentId").focus();    // ready for the next scan
+      document.getElementById("message").innerHTML = "Offense report saved!";
+      document.getElementById("studentId").focus();
     };
-
-
-    // ----- CLEAR BUTTON -----
 
     function clearMessages() {
       var errors = document.getElementsByClassName("error");
-      for (var i = 0; i < errors.length; i++) {
-        errors[i].innerHTML = "";
-      }
+      for (var i = 0; i < errors.length; i++) { errors[i].innerHTML = ""; }
       document.getElementById("message").innerHTML = "";
       document.getElementById("scanMessage").innerHTML = "";
       setTimeout(updateCategories, 0);
       document.getElementById("studentId").focus();
     }
-    // Show the saved reports when the page opens
+
+    loadSettings();
     showReports();
   </script>
 </body>
