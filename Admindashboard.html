@@ -375,9 +375,9 @@
 
 	<script>
 		// ===== 1. SAVE AND GET DATA (localStorage) =====
-		// Reports are saved under the key "offenseReports" (same key as the Faculty dashboard)
+		// Reports will saved under the  "offenseReports" (same key as the Faculty dashboard)
 		//
-		// FIELD NAMES (same as the Faculty page):
+		// Field names (same as the Faculty page):
 		//   date, studentId, studentName, studentEmail, offenseType,
 		//   offenseCategory, specificViolation, remarks
 		// Added by the Dean page: status ("Pending" or "Confirmed"), csHours,
@@ -670,9 +670,9 @@
 			showMessages();
 		}
 
-		function addSampleMessage() {
+		function SampleMessage() {
 			var sample = [
-				{ from: "Juan Dela Cruz (2022-0001)", text: "Good day, can I ask about my CS hours?", reply: "" }
+				{ from: "Ederly Labarro (2095383)", text: "Good day Po, May i ask abouy my violation?", reply: "" }
 			];
 			saveMessages(sample);
 			showMessages();
@@ -707,8 +707,10 @@
 		}
 
 		function logout() {
-			window.location.href = "index.html";
-		}
+			if (confirm("Are you sure you want to logout?")) {
+				event.preventDefault();
+				window.location.href = "index.html";
+			}
 
 		showReports();
 	</script>
