@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -375,9 +376,9 @@
 
 	<script>
 		// ===== 1. SAVE AND GET DATA (localStorage) =====
-		// Reports will saved under the  "offenseReports" (same key as the Faculty dashboard)
+		// Reports are saved under the key "offenseReports" (same key as the Faculty dashboard)
 		//
-		// Field names (same as the Faculty page):
+		// FIELD NAMES (same as the Faculty page):
 		//   date, studentId, studentName, studentEmail, offenseType,
 		//   offenseCategory, specificViolation, remarks
 		// Added by the Dean page: status ("Pending" or "Confirmed"), csHours,
@@ -670,14 +671,15 @@
 			showMessages();
 		}
 
-		function SampleMessage() {
+		function addSampleMessage() {
 			var sample = [
-				{ from: "Ederly Labarro (2095383)", text: "Good day Po, May i ask abouy my violation?", reply: "" }
+				{ from: "Juan Dela Cruz (2022-0001)", text: "Good day, can I ask about my CS hours?", reply: "" }
 			];
 			saveMessages(sample);
 			showMessages();
 		}
-        
+
+
 		// ===== 6. SETTINGS =====
 
 		function changePassword() {
@@ -711,7 +713,8 @@
 				event.preventDefault();
 				window.location.href = "index.html";
 			}
-
+		}
+		// ===== START =====
 		showReports();
 	</script>
 </body>
